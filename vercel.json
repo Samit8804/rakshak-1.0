@@ -1,6 +1,5 @@
 {
-  "buildCommand": "cd rakshak-frontend && npm install && npm run build",
-  "outputDirectory": "rakshak-frontend/dist",
+"buildCommand": "cd safefind-frontend && npm install && npm run build",\n  "outputDirectory": "safefind-frontend/dist",
   "rewrites": [
     {
       "source": "/(.*)",
