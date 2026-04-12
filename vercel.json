@@ -1,8 +1,10 @@
 {
+  "buildCommand": "cd rakshak-frontend && npm install && npm run build",
+  "outputDirectory": "rakshak-frontend/dist",
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "/rakshak-frontend/index.html"
+      "destination": "/index.html"
     }
   ]
 }
