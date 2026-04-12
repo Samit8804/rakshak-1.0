@@ -1,5 +1,6 @@
 {
-"buildCommand": "cd safefind-frontend && npm install && npm run build",\n  "outputDirectory": "safefind-frontend/dist",
+  "buildCommand": "cd safefind-frontend && npm install && npm run build",
+  "outputDirectory": "safefind-frontend/dist",
   "rewrites": [
     {
       "source": "/(.*)",
