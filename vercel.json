@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/rakshak-frontend/index.html"
+    }
+  ]
+}
