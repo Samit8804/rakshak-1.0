@@ -9,28 +9,19 @@ export default function Login() {
 
   const onSubmit = async (e) => {
     e.preventDefault()
+    setError('')
     try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      })
-      const data = await res.json()
-      if (res.ok) {
-        localStorage.setItem('token', data.token)
-        navigate('/dashboard')
-      } else {
-        setError((data.errors && data.errors[0].msg) || data.msg || 'Login failed')
-      }
+      const res = await axios.post(`${API_URL}/auth/login`, { email, password })
+      login(res.data.token, res.data.user)
     } catch (err) {
-      setError('Server error')
+      setError(err.response?.data?.message || 'Login failed')
     }
   }
 
   return (
     <div className="page login-page">
       <div className="card">
-        <h2>SafeFind</h2>
+<h2>SafeFind Login</h2>
         <form onSubmit={onSubmit}>
           <label>Email</label>
           <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />

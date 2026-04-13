@@ -25,7 +25,7 @@ function Home() {
     <>
       <section className="hero">
         <div className="container">
-          <h1>Protecting Lives, Reuniting Families</h1>
+<h1>SafeFind - Protecting Lives, Reuniting Families</h1>
           <p>Help us bring missing persons home. Upload sightings, report cases, and use AI-powered face recognition to find matches.</p>
           <div className="hero-actions">
             <Link to="/report-missing" className="btn btn-primary">Report Missing Person</Link>

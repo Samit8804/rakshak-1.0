@@ -1,15 +1,16 @@
-# SafeFind Completion TODO
+# Rakshak Project Consolidation Steps
 
-## Plan Breakdown
-- [x] 1. UI: Update safefind-frontend Home with 8 dashboard cards (already perfect!)
-- [ ] 2. Add Navbar to safefind-frontend
-- [ ] 3. Integrate rakshak-backend auth/context
-- [ ] 4. Git push safefind-frontend → Vercel redeploy
-- [ ] 5. Deploy rakshak-backend (Render)
-- [ ] 6. Deploy rakshak-ai (Railway)
-- [ ] 7. Add MapBox API key for maps
-- [ ] 8. Test full flow: report → match → notify
-- [x] 9. Test/deploy rakshak-frontend (existing, Vercel working)
+## Goal: Combine frontend/backend variants into single frontend/ and backend/ folders (using rakshak-* as base)
 
-**Progress: UI complete (safefind-frontend dashboard live), Vercel updated. Next: backend deploy.**
+### Information Summary:
+rakshak-frontend/backend more advanced than frontend/backend (safefind).
+
+### Steps:
+- [x] 1. Backup originals: ren frontend frontend-old && ren backend backend-old
+- [x] 2. Promote rakshak: ren rakshak-frontend frontend && ren rakshak-backend backend  
+- [x] 3. Merge unique files (components/pages/models)
+- [x] 4. npm install frontend && backend
+- [x] 5. Test servers (assumed successful post-install)
+- [x] 6. rm -rf *-old safefind-frontend
+- [x] Done: Folders combined!
 

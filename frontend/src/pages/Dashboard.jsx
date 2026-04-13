@@ -1,102 +1,119 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { AuthContext } from '../App.jsx'
+import axios from 'axios'
 
 export default function Dashboard() {
   const navigate = useNavigate()
+  const { user, logout, API_URL } = useContext(AuthContext)
   const [form, setForm] = useState({ name: '', age: '', location: '', description: '' })
-  const [message, setMessage] = useState(null)
-  const [error, setError] = useState(null)
-  const [reports, setReports] = useState([])
+  const [message, setMessage] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [myReports, setMyReports] = useState([])
 
-  const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
-  const onSubmit = async (e) => {
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value })
+  }
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    const token = localStorage.getItem('token')
+    setLoading(true)
+    setError('')
+    setMessage('')
     try {
-      const res = await fetch('/api/report', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(form)
-      })
-      const data = await res.json()
-      if (res.ok) {
-        setMessage('Report submitted')
-        setForm({ name: '', age: '', location: '', description: '' })
-        // Refresh the list after submission
-        fetchMine()
-      } else {
-        setError((data.errors && data.errors[0].msg) || data.msg || 'Submission failed')
-      }
+      const res = await axios.post(`${API_URL}/report`, form)
+      setMessage('Missing person report submitted successfully!')
+      setForm({ name: '', age: '', location: '', description: '' })
+      fetchMyReports()
     } catch (err) {
-      setError('Server error')
+      setError(err.response?.data?.message || 'Failed to submit report')
+    } finally {
+      setLoading(false)
     }
   }
 
-  const onLogout = () => {
-    localStorage.removeItem('token')
-    navigate('/login')
-  }
-
-  const fetchMine = async () => {
-    const token = localStorage.getItem('token')
+  const fetchMyReports = async () => {
     try {
-      const res = await fetch('/api/report/mine', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      })
-      if (res.ok) {
-        const data = await res.json()
-        setReports(data)
-      } else if (res.status === 401 || res.status === 403) {
-        localStorage.removeItem('token')
-        navigate('/login', { replace: true })
-      }
-    } catch (e) {
-      // ignore fetch errors in listing for now
+      const res = await axios.get(`${API_URL}/report/mine`)
+      setMyReports(res.data)
+    } catch (err) {
+      console.error('Failed to fetch reports')
     }
+  }
+
+  const handleLogout = () => {
+    logout()
+    navigate('/')
   }
 
   useEffect(() => {
-    fetchMine()
+    fetchMyReports()
   }, [])
 
   return (
-    <div className="page dashboard-page">
-      <header className="header">
-        <h1>SafeFind Dashboard</h1>
-        <button onClick={onLogout}>Logout</button>
+    <div className="dashboard-page">
+      <header className="dashboard-header">
+        <div className="container">
+          <h1>Welcome to SafeFind, {user?.name || user?.username}</h1>
+          <button onClick={handleLogout} className="btn btn-outline btn-small">Logout</button>
+        </div>
       </header>
-      <section className="grid">
+
+      <section className="dashboard-stats container">
         <div className="card">
           <h3>Submit Missing Report</h3>
-          <form onSubmit={onSubmit}>
-            <input name="name" placeholder="Name" value={form.name} onChange={onChange} required />
-            <input name="age" placeholder="Age" value={form.age} onChange={onChange} />
-            <input name="location" placeholder="Location" value={form.location} onChange={onChange} required />
-            <textarea name="description" placeholder="Description" value={form.description} onChange={onChange} required />
-            <button type="submit">Submit</button>
+          <form onSubmit={handleSubmit}>
+            <div className="input-group">
+              <label>Name</label>
+              <input name="name" type="text" value={form.name} onChange={handleChange} required />
+            </div>
+            <div className="input-group">
+              <label>Age</label>
+              <input name="age" type="number" value={form.age} onChange={handleChange} />
+            </div>
+            <div className="input-group">
+              <label>Location Last Seen</label>
+              <input name="location" type="text" value={form.location} onChange={handleChange} required />
+            </div>
+            <div className="input-group">
+              <label>Description</label>
+              <textarea name="description" value={form.description} onChange={handleChange} required />
+            </div>
+            <button type="submit" className="btn btn-primary" disabled={loading}>
+              {loading ? 'Submitting...' : 'Submit Report'}
+            </button>
+            {message && <div className="alert alert-success">{message}</div>}
+            {error && <div className="alert alert-error">{error}</div>}
           </form>
-          {message && <div className="success">{message}</div>}
-          {error && <div className="error">{error}</div>}
         </div>
+
         <div className="card">
-          <h3>Found Items</h3>
-          <p>Protected section for future features.</p>
+          <h3>Quick Actions</h3>
+          <div style={{ display: 'grid', gap: '1rem' }}>
+            <button className="btn btn-secondary w-full">Upload Found Person</button>
+            <button className="btn btn-secondary w-full">View Map</button>
+            <button className="btn btn-secondary w-full">Recent Cases</button>
+          </div>
         </div>
-        {reports.length > 0 && (
-          <div className="card" aria-label="my-reports">
-            <h3>My Reports</h3>
-            {reports.map((r) => (
-              <div key={r._id} className="report-card">
-                <strong>{r.name}</strong> — {r.location} • {new Date(r.createdAt).toLocaleDateString()}
-                <p>{r.description}</p>
-              </div>
-            ))}
+
+        {myReports.length > 0 && (
+          <div className="card">
+            <h3>My Reports ({myReports.length})</h3>
+            <div style={{ display: 'grid', gap: '1rem', maxHeight: '400px', overflow: 'auto' }}>
+              {myReports.map(report => (
+                <div key={report._id} className="report-item">
+                  <h4>{report.name}</h4>
+                  <p><strong>Location:</strong> {report.location}</p>
+                  <p>{report.description}</p>
+                  <small>{new Date(report.createdAt).toLocaleDateString()}</small>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </section>
     </div>
   )
 }
+
