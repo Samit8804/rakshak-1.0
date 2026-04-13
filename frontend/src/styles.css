@@ -1,0 +1,47 @@
+:root {
+  --bg: #0b1020;
+  --card: #111827;
+  --text: #e5e7eb;
+  --accent: #6ee7b7;
+}
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system;
+  background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+  color: var(--text);
+}
+.app-root { min-height: 100%; padding: 40px 16px; }
+.card {
+  background: rgba(2,6,23,0.75);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 420px;
+  width: 100%;
+  margin: 0 auto;
+}
+.admin-page { }
+.report-card { padding: 8px 0; border-top: 1px solid rgba(255,255,255,0.08); }
+.report-card:first-of-type { border-top: none; padding-top: 0; }
+.admin-actions button { padding: 6px 10px; border-radius: 6px; border: none; cursor: pointer; }
+.admin-actions button:first-child { background: #374151; color: #fff; }
+.admin-actions button:last-child { background: #e11d48; color: #fff; }
+.report-card:first-of-type { border-top: none; padding-top: 0; }
+.page { display: grid; place-items: center; min-height: 100vh; }
+.login-page .card, .signup-page .card { text-align: left; }
+.header { display: flex; justify-content: space-between; align-items: center; padding: 8px 0 16px; }
+.grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); padding: 8px; }
+.report-card { padding: 8px 0; border-top: 1px solid rgba(255,255,255,0.08); }
+.report-card:first-of-type { border-top: none; padding-top: 0; }
+input, textarea { width: 100%; padding: 10px; margin: 8px 0; border-radius: 6px; border: 1px solid #334155; background: #0b1220; color: #fff; }
+button { padding: 10px 14px; border-radius: 6px; border: none; background: #2563eb; color: white; cursor: pointer; }
+button:hover { opacity: 0.95; }
+.error { color: #f87171; margin-top: 6px; }
+.success { color: #34d399; margin-top: 6px; }
+label { font-size: 14px; color: #cbd5e1; margin-top: 8px; display: block; }
+textarea { min-height: 100px; resize: vertical; }
+@media (min-width: 900px) {
+  .header { padding-left: 10px; padding-right: 10px; }
+}

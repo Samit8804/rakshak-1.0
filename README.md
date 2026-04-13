@@ -1,119 +1,47 @@
-# 🚀 Rakshak - Women Safety & Missing Person Platform
+# SafeFind Full-Stack Template
 
-A full-stack web application for women safety and missing person identification using AI-powered face recognition.
+This repository contains a full-stack authentication system with a protected dashboard for submitting missing-person reports.
 
-## 📋 Prerequisites
+## Tech Stack
+- Frontend: React (Vite feel)
+- Backend: Node.js + Express
+- Database: MongoDB
+- Authentication: JWT
 
-- Node.js (v18+)
-- Python (v3.8+)
-- MongoDB (v6.0+)
-- npm or yarn
+## Setup
 
-## 🛠️ Installation & Setup
+1) Backend
+- Ensure MongoDB is running locally (or set MONGODB_URI to a remote instance).
+- Copy backend/.env.example to backend/.env and set MONGODB_URI and JWT_SECRET.
+- Install: `cd backend && npm install`
+- Start: `cd backend && npm start` (defaults to port 5000)
 
-### 1. MongoDB Setup
-```bash
-# Install and start MongoDB locally, or use MongoDB Atlas
-# Update MONGO_URI in rakshak-backend/.env if using cloud MongoDB
-```
+2) Frontend
+- Ensure the frontend proxy is configured to talk to the backend (proxy is set in the frontend config).
+- Install: `cd frontend && npm install`
+- Start: `cd frontend && npm run dev` (Vite)
 
-### 2. Backend Setup
-```bash
-cd rakshak-backend
-npm install
-# Create uploads/cases and uploads/sightings folders manually if needed
-npm start
-# Backend runs on http://localhost:5000
-```
+## How it works
+- On load, the app shows the login page. Users can signup or login.
+- Successful login/signup stores a JWT in localStorage and redirects to /dashboard.
+- The dashboard is protected and requires a valid JWT. Users can submit missing-person reports which are saved to MongoDB.
+- Logout clears the token and redirects to login.
 
-### 3. AI Service Setup
-```bash
-cd rakshak-ai
-pip install -r requirements.txt
-# Note: face_recognition may need CMake and dlib installed
-python app.py
-# AI service runs on http://localhost:5001
-```
+-## API Endpoints (backend)
+- POST /api/auth/signup — create a new user, returns JWT
+- POST /api/auth/login — login, returns JWT
+- POST /api/report — submit a missing report (protected, requires Authorization: Bearer <token>)
+- GET /api/report/mine — get current user's reports (protected)
+- Seed: run backend script to seed sample data
 
-### 4. Frontend Setup
-```bash
-cd rakshak-frontend
-npm install
-npm run dev
-# Frontend runs on http://localhost:3000
-```
+## Seed Data
+- Run: `cd backend && npm run seed` to populate demo user and sample reports
 
-## 🔑 Default Admin Account
-After registration with role "Admin", you can access the admin dashboard at `/admin`
+## Notes
+- Passwords are hashed with bcrypt.
+- JWTs are used to protect routes.
 
-## 📁 Project Structure
-
-```
-rakshak/
-├── rakshak-backend/        # Node.js + Express API
-│   ├── models/            # Mongoose models
-│   ├── routes/            # API routes
-│   ├── middleware/        # Auth middleware
-│   ├── uploads/           # Uploaded images
-│   └── server.js          # Entry point
-│
-├── rakshak-ai/            # Python Flask AI service
-│   └── app.py             # Face recognition service
-│
-├── rakshak-frontend/      # React.js frontend
-│   ├── src/
-│   │   ├── components/    # React components
-│   │   ├── pages/         # Page components
-│   │   ├── App.jsx        # Main app
-│   │   └── index.css      # Styles
-│   └── package.json
-│
-└── SPEC.md                # Project specification
-```
-
-## 🔌 API Endpoints
-
-### Authentication
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - Login user
-- `GET /api/auth/me` - Get current user
-
-### Cases
-- `GET /api/cases` - Get all cases (with filters)
-- `GET /api/cases/:id` - Get case details
-- `POST /api/cases` - Create missing person report
-- `PUT /api/cases/:id` - Update case
-- `DELETE /api/cases/:id` - Delete case (admin)
-- `PUT /api/cases/:id/status` - Update case status (admin)
-
-### Sightings
-- `POST /api/sightings` - Report a sighting
-- `GET /api/sightings/case/:caseId` - Get sightings for a case
-
-### AI
-- `POST /api/ai/encode` - Encode a face
-- `POST /api/ai/match` - Find face matches
-- `POST /api/ai/encode-and-store/:caseId` - Encode and store face
-
-## 🎨 Features Implemented
-
-1. ✅ User authentication (JWT)
-2. ✅ Report missing persons with images
-3. ✅ Upload found person for face matching
-4. ✅ AI-based face recognition
-5. ✅ View all cases with filters
-6. ✅ Interactive map view
-7. ✅ Case detail pages
-8. ✅ Report sightings
-9. ✅ Admin dashboard
-10. ✅ Responsive UI
-
-## ⚠️ Important Notes
-
-- Face recognition requires dlib which can be tricky to install on Windows
-- For production, use proper image storage (AWS S3, Cloudinary)
-- Add email notifications for matches
-- Implement rate limiting for API endpoints
-
-## 📞 Emergency Contacts
-In case of emergency, contact local law enforcement immediately.
+## Admin Endpoints and Seed
+- GET /api/report/all — list all reports (admin only)
+- Admin seed: an admin user is seeded as admin@safefind.local with password adminpass
+- You can login as admin and browse /admin/reports after signing in.
